@@ -3,25 +3,30 @@ package micro_web
 import (
 	"net/http"
 
-	v "github.com/laux-development/micro-view"
+	v "github.com/laux-development/micro_view"
 )
 
-type web struct{
+type web struct {
+	view v.ViewProvider
 	data interface{}
 }
 
-NewWeb(data interface{}) *web{
-	return &web{data:data}
+func NewWeb(view v.ViewProvider, data interface{}) *web {
+	return &web{view: view, data: data}
 }
 
 func (we *web) Home(w http.ResponseWriter, r *http.Request) {
-	v.Home(w)
+	we.view.Home(w)
 }
 
 func (we *web) Login(w http.ResponseWriter, r *http.Request) {
-	v.Login(w)
+	we.view.Login(w)
 }
 
 func (we *web) Profile(w http.ResponseWriter, r *http.Request) {
-	v.Profile(w, we.data)
+	err := we.view.Profile(w, we.data)
+
+	if err != nil {
+		http.Error(w, "Fatal Error", 500)
+	}
 }
