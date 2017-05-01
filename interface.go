@@ -1,2 +1,1 @@
-package micro-web
-
+package web
